@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net4.5</TargetFramework>
+    <AssemblySearchPaths>$(AssemblySearchPaths);{GAC};.\deps</AssemblySearchPaths>
+    <ReferencePath>.\deps;$(ReferencePath)</ReferencePath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="FNA" />
+    <PackageReference Include="DotNetZip" Version="1.16.0" />
+  </ItemGroup>
+
+</Project>

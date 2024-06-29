@@ -1,0 +1,7 @@
+build/**
+build-arm64/**
+obj/**
+**/FNARepacker.exe
+**/FNARepacker.pdb
+**/libastcUtil.so
+.vscode/
