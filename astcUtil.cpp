@@ -27,10 +27,6 @@ static astcenc_config astc_cfg = {};
 
 static int NUM_JOBS = 1;
 
-static const astcenc_swizzle swizzle {
-    ASTCENC_SWZ_R, ASTCENC_SWZ_G, ASTCENC_SWZ_B, ASTCENC_SWZ_A
-};
-
 int astcenc_init(unsigned int blk_w, unsigned int blk_h)
 {
     // Check if we're already configured and configured correctly
@@ -49,7 +45,7 @@ int astcenc_init(unsigned int blk_w, unsigned int blk_h)
 
     float q, quality = ASTC_QUALITY;
     char *quality_override, *_;
-    if (quality_override = getenv("ASTC_QUALITY")) {
+    if ((quality_override = getenv("ASTC_QUALITY")) != NULL) {
         errno = 0;
         q = strtof(quality_override, &_);
         if (errno != 0) {
@@ -77,11 +73,18 @@ int astcenc_init(unsigned int blk_w, unsigned int blk_h)
     return 1;
 }
 
-DECLSPEC int convert_texture(int w, int h, int payload_len, unsigned int blk_w, unsigned int blk_h, uint8_t *in_tex, uint8_t *out_tex)
+DECLSPEC int convert_texture_swizzle(
+    int w, int h, int payload_len, 
+    unsigned int blk_w, unsigned int blk_h,
+    astcenc_swz r, astcenc_swz g, astcenc_swz b, astcenc_swz a,
+    uint8_t *in_tex, uint8_t *out_tex
+)
 {
     if (!astcenc_init(blk_w, blk_h)) {
         return 0;
     }
+
+    astcenc_swizzle swizzle { r, g, b, a };
 
     void *slices[] = { (void*)in_tex };
     astcenc_image image = {};
@@ -110,4 +113,12 @@ DECLSPEC int convert_texture(int w, int h, int payload_len, unsigned int blk_w, 
     }
 
     return 1;
+}
+
+DECLSPEC int convert_texture(int w, int h, int payload_len, unsigned int blk_w, unsigned int blk_h, uint8_t *in_tex, uint8_t *out_tex)
+{
+    return convert_texture_swizzle(
+        w, h, payload_len, blk_w, blk_h,
+        ASTCENC_SWZ_R, ASTCENC_SWZ_G, ASTCENC_SWZ_B, ASTCENC_SWZ_A,
+        in_tex, out_tex);
 }
